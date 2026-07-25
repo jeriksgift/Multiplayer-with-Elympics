@@ -32,8 +32,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public void CreateOrJoinRoomBtn()
     {
         if (nickNameInputField == null) return;
-        var nick = nickNameInputField.text?.Trim();
-        if (string.IsNullOrEmpty(nick)) return;
+        if (nickNameInputField.text.Length <= 0)
+        {
+            Debug.Log("Invalid Nickname");
+            return;
+        }
 
         PhotonNetwork.NickName = nickNameInputField.text;
         PhotonNetwork.JoinRandomRoom();
@@ -49,7 +52,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        Debug.Log($"Joined room {PhotonNetwork.CurrentRoom.Name}");
         LoadingManager.Instance.LoadNetworkLevel("Game");
     }
 

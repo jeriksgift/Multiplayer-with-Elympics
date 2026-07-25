@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     [SerializeField] private Camera cam;
     [SerializeField] private Transform capsuleRef;
     [SerializeField] private Transform footPoint;
-    private InputManager inputManager;
+    //private InputManager InputManager.Instance;
 
     [Header("Movement Settings")]
     [SerializeField] private float walkSpeed;
@@ -34,17 +34,14 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     {
         if (!GetComponent<PhotonView>().IsMine) return;
 
-        inputManager = gameObject.AddComponent<InputManager>();
+        //InputManager.Instance = gameObject.AddComponent<InputManager>();
     }
 
     private void Start()
     {
-        if (!GetComponent<PhotonView>().IsMine) return;
-
         DestroyOtherCameras();
         
-        inputManager.LockCursor(true);
-       // InvokeRepeating("DisplayFPS", 1f, 1f);
+        InputManager.Instance.LockCursor(true);
     }
 
     private void DestroyOtherCameras()
@@ -69,10 +66,10 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
 
     private void MovementAndLook()
     {
-        speed = (inputManager.sprint.IsPressed()) ? runSpeed : walkSpeed;
+        speed = (InputManager.Instance.sprint.IsPressed()) ? runSpeed : walkSpeed;
 
-        moveDir = inputManager.move.ReadValue<Vector2>();
-        lookDir = inputManager.look.ReadValue<Vector2>();
+        moveDir = InputManager.Instance.move.ReadValue<Vector2>();
+        lookDir = InputManager.Instance.look.ReadValue<Vector2>();
 
         currentRot = rb.rotation.eulerAngles;
 
@@ -87,7 +84,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
 
     private void HandleJump()
     {
-        if (inputManager.jump.WasPressedThisFrame() && IsGrounded())
+        if (InputManager.Instance.jump.WasPressedThisFrame() && IsGrounded())
         {
             rb.AddForce(capsuleRef.transform.up * jumpForce, ForceMode.Impulse);
         }

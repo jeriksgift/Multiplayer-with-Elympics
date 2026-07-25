@@ -1,5 +1,6 @@
 using Photon.Pun;
 using Photon.Realtime;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -17,6 +18,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     [SerializeField] private float runSpeed;
     private float speed;
     [SerializeField] private float jumpForce;
+    [SerializeField] private float camMinAngle;
+    [SerializeField] private float camMaxAngle;
 
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float groundCheckDistance = 0.2f;
@@ -29,6 +32,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
 
     private Vector3 newPos;
     private Vector3 currentRot;
+    float pitch;
 
     private void Awake()
     {
@@ -79,7 +83,17 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
 
         rb.Move(rb.position + newPos, Quaternion.Euler(currentRot));
 
-        cam.transform.Rotate(Vector3.left * lookDir.y * mouseSensitivity * Time.deltaTime);
+        //float pitch = cam.transform.localEulerAngles.x;
+        pitch -= lookDir.y * mouseSensitivity * Time.deltaTime;
+        pitch = Mathf.Clamp(pitch, camMinAngle, camMaxAngle);
+
+        Vector3 angles = cam.transform.localEulerAngles;
+
+        // Convert X to signed angle if needed
+        float currentY = angles.y;
+        float currentZ = angles.z;
+
+        cam.transform.localRotation = Quaternion.Euler(pitch, currentY, currentZ);
     }
 
     private void HandleJump()

@@ -373,9 +373,9 @@ RectTransform:
   m_Father: {fileID: 5704406370106627079}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 0.3, y: 1}
   m_AnchoredPosition: {x: 10, y: -10}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: -10, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &370515895056048161
 CanvasRenderer:
@@ -1016,6 +1016,8 @@ MonoBehaviour:
   walkSpeed: 5
   runSpeed: 10
   jumpForce: 7
+  camMinAngle: -15
+  camMaxAngle: 15
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -1154,7 +1156,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeaponSystem
   bulletPrefab: {fileID: 3865717523332666017, guid: b7bb02d21b4da534d82d1e3787bc0cdc, type: 3}
   maxBulletsCount: 50
-  bulletForce: 70
+  bulletForce: 500
   muzzlePoint: {fileID: 4006568127376361403}
 --- !u!114 &2421104631434588726
 MonoBehaviour:

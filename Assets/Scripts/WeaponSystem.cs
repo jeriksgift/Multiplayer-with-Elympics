@@ -43,7 +43,25 @@ public class WeaponSystem : MonoBehaviourPun
         bullet.SetActive(true);
         bullet.transform.position = muzzlePoint.position;
         bullet.GetComponent<Collider>().enabled = true;
-        bullet.GetComponent<Rigidbody>().AddForce(Camera.main.gameObject.transform.forward * bulletForce, ForceMode.Impulse);
+        bullet.GetComponent<Rigidbody>().AddForce(ShootDirection() * bulletForce, ForceMode.Impulse);
         bullets.Enqueue(bullet);
+    }
+
+    private Vector3 ShootDirection()
+    {
+        Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
+
+        Ray ray = Camera.main.ScreenPointToRay(screenCenter);
+        RaycastHit hit;
+        Vector3 targetPoint;
+        if(Physics.Raycast(ray, out hit, 100f))
+        {
+            targetPoint = hit.point;
+        }
+        else
+        {
+            targetPoint = ray.GetPoint(100f);
+        }
+        return (targetPoint - muzzlePoint.position).normalized;
     }
 }

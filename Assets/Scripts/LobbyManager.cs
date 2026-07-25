@@ -7,30 +7,50 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] private TextMeshProUGUI nickNameInputField;
 
-    private void Start()
+    private void Awake()
     {
         PhotonNetwork.ConnectUsingSettings();
-        PhotonNetwork.JoinLobby();
+        Debug.Log("Connecting...");
     }
 
+    private void Start()
+    {
+        LoadingManager.Instance.ShowLoadingScreen("Connecting...");
+    }
+
+    public override void OnConnectedToMaster()
+    {
+        Debug.Log("Connected to Master " + Time.time);
+        PhotonNetwork.JoinLobby();
+    }
+    public override void OnJoinedLobby()
+    {
+        Debug.Log("Joined Lobby");
+        LoadingManager.Instance.HideLoadingScreen();
+    }
 
     public void CreateOrJoinRoomBtn()
     {
-        if (nickNameInputField.text.Length <= 0) return;
+        if (nickNameInputField == null) return;
+        var nick = nickNameInputField.text?.Trim();
+        if (string.IsNullOrEmpty(nick)) return;
 
-        PhotonNetwork.JoinRandomRoom();
         PhotonNetwork.NickName = nickNameInputField.text;
+        PhotonNetwork.JoinRandomRoom();
+
+        LoadingManager.Instance.ShowLoadingScreen("Loading...");
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        PhotonNetwork.CreateRoom(null);
         PhotonNetwork.NickName = nickNameInputField.text;
+        PhotonNetwork.CreateRoom(null);
     }
 
     public override void OnJoinedRoom()
     {
-        Debug.Log($"Joined room {PhotonNetwork.CurrentRoom}");
+        Debug.Log($"Joined room {PhotonNetwork.CurrentRoom.Name}");
+        LoadingManager.Instance.LoadNetworkLevel("Game");
     }
 
     public void ExitBtn()

@@ -32,7 +32,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public void CreateOrJoinRoomBtn()
     {
         if (nickNameInputField == null) return;
-        if (nickNameInputField.text.Length <= 0)
+        if (string.IsNullOrEmpty((nickNameInputField.text).Trim()) || nickNameInputField.text.Length <= 1) // The text length is giving 1 even if no text was typed
         {
             Debug.Log("Invalid Nickname");
             return;

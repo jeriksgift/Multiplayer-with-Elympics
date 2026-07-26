@@ -16,6 +16,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         LoadingManager.Instance.HideLoadingScreen();
         Transform spawnLoc = GetRandomSpawnPoint();
         PhotonNetwork.Instantiate(playerPrefab.name, spawnLoc.position, spawnLoc.rotation);
+
+        Debug.Log(PhotonNetwork.CurrentRoom.Name);
     }
 
     private Transform GetRandomSpawnPoint()

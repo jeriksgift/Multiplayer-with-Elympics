@@ -1,23 +1,11 @@
 using UnityEngine;
 using Photon.Pun;
-using System.Collections.Generic;
 
 public class WeaponSystem : MonoBehaviourPun
 {
-    [SerializeField] private GameObject bulletPrefab;
-
-    private Queue<GameObject> bullets = new();
-
-    [SerializeField] private int maxBulletsCount;
-
-    [SerializeField] private float bulletForce;
+    [SerializeField] private float bulletDamage;
 
     [SerializeField] private Transform muzzlePoint;
-
-    private void Start()
-    {
-        InstantiateBullets();
-    }
 
     private void Update()
     {
@@ -26,42 +14,33 @@ public class WeaponSystem : MonoBehaviourPun
         if (InputManager.Instance.fire.WasPressedThisFrame()) Fire();
     }
 
-    private void InstantiateBullets()
+    private void Fire()
     {
-        for (int i = 0; i < maxBulletsCount; i++)
-        {
-            GameObject bullet = Instantiate(bulletPrefab);
-            bullet.SetActive(false);
+        RaycastHit? hit = FireHit();
 
-            bullets.Enqueue(bullet);
+        if (hit.HasValue)
+        {
+            if (hit.Value.collider.TryGetComponent<HealthComponent>(out HealthComponent healthComponent))
+            {
+                healthComponent.Damage(bulletDamage);
+            }
         }
     }
 
-    private void Fire()
-    {
-        GameObject bullet = bullets.Dequeue();
-        bullet.SetActive(true);
-        bullet.transform.position = muzzlePoint.position;
-        bullet.GetComponent<Collider>().enabled = true;
-        bullet.GetComponent<Rigidbody>().AddForce(ShootDirection() * bulletForce, ForceMode.Impulse);
-        bullets.Enqueue(bullet);
-    }
-
-    private Vector3 ShootDirection()
+    private RaycastHit? FireHit()
     {
         Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
 
         Ray ray = Camera.main.ScreenPointToRay(screenCenter);
         RaycastHit hit;
-        Vector3 targetPoint;
-        if(Physics.Raycast(ray, out hit, 100f))
+
+        if (Physics.Raycast(ray, out hit, 100f))
         {
-            targetPoint = hit.point;
+            return hit;
         }
         else
         {
-            targetPoint = ray.GetPoint(100f);
+            return null;
         }
-        return (targetPoint - muzzlePoint.position).normalized;
     }
 }

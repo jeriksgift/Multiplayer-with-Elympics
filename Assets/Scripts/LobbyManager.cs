@@ -6,6 +6,7 @@ using UnityEngine;
 public class LobbyManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] private TextMeshProUGUI nickNameInputField;
+    //[SerializeField] private TMP_InputField roomNameInputField;
 
     private void Awake()
     {
@@ -25,7 +26,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     }
     public override void OnJoinedLobby()
     {
-        Debug.Log("Joined Lobby");
+        Debug.Log("Joined Lobby " + PhotonNetwork.CurrentLobby.Name);
         LoadingManager.Instance.HideLoadingScreen();
     }
 
@@ -41,13 +42,15 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         PhotonNetwork.NickName = nickNameInputField.text;
         PhotonNetwork.JoinRandomRoom();
 
+        //PhotonNetwork.JoinRoom()
+
         LoadingManager.Instance.ShowLoadingScreen("Loading...");
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
         PhotonNetwork.NickName = nickNameInputField.text;
-        PhotonNetwork.CreateRoom(null);
+        PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = 8 });
     }
 
     public override void OnJoinedRoom()

@@ -145,7 +145,7 @@ GameObject:
   - component: {fileID: 3618208595811004901}
   m_Layer: 5
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: Canvas
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -899,6 +899,7 @@ GameObject:
   - component: {fileID: 6750009935039369278}
   - component: {fileID: 9150485000912931270}
   - component: {fileID: 2421104631434588726}
+  - component: {fileID: -5932302857726249086}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1154,9 +1155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bafd5296ce956e44eb4bee4a5a5554ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WeaponSystem
-  bulletPrefab: {fileID: 3865717523332666017, guid: b7bb02d21b4da534d82d1e3787bc0cdc, type: 3}
-  maxBulletsCount: 50
-  bulletForce: 500
+  bulletDamage: 20
   muzzlePoint: {fileID: 4006568127376361403}
 --- !u!114 &2421104631434588726
 MonoBehaviour:
@@ -1172,3 +1171,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerUI
   photonView: {fileID: 2149354460594613404}
   nicknameTxt: {fileID: 7135078211840822634}
+--- !u!114 &-5932302857726249086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8977624253674117120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fc0921a78a6bad43af6f3ca7ee25c54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthComponent
+  maxHealth: 100

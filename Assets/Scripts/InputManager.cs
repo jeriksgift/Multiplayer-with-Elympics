@@ -12,6 +12,7 @@ public class InputManager : MonoBehaviour
     [HideInInspector] public InputAction sprint;
     [HideInInspector] public InputAction jump;
     [HideInInspector] public InputAction fire;
+    [HideInInspector] public InputAction escape;
 
     private void Awake()
     {
@@ -26,11 +27,20 @@ public class InputManager : MonoBehaviour
         jump = playerInput.actions.FindAction("Jump");
         sprint = playerInput.actions.FindAction("Sprint");
         fire = playerInput.actions.FindAction("Fire");
+        escape = playerInput.actions.FindAction("Escape");
     }
 
     public void LockCursor(bool locked)
     {
         Cursor.lockState = (locked) ? CursorLockMode.Locked : CursorLockMode.None;
         Cursor.visible = !locked;
+    }
+
+    private void Update()
+    {
+        if (escape.WasPressedThisFrame())
+        {
+            LockCursor(!Cursor.visible);
+        }
     }
 }

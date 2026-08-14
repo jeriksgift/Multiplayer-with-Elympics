@@ -9,7 +9,7 @@ public class WeaponSystem : MonoBehaviourPun
 
     private void Update()
     {
-        if (!GetComponent<PhotonView>().IsMine) return;
+        if (!photonView.IsMine) return;
 
         if (InputManager.Instance.fire.WasPressedThisFrame()) Fire();
     }
@@ -22,7 +22,9 @@ public class WeaponSystem : MonoBehaviourPun
         {
             if (hit.Value.collider.TryGetComponent<HealthComponent>(out HealthComponent healthComponent))
             {
-                healthComponent.Damage(bulletDamage);
+                var target = healthComponent.GetComponent<PhotonView>();
+                target.RPC(nameof(HealthComponent.Damage), target.Owner, bulletDamage, hit.Value.point, hit.Value.normal);
+                //healthComponent.Damage(bulletDamage);
             }
         }
     }

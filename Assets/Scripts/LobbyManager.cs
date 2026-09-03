@@ -9,6 +9,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     [SerializeField] private TMP_InputField roomNameInputField;
 
+    [SerializeField] private GameObject lobbyPanel;
+    [SerializeField] private GameObject roomPanel;
+
     private void Awake()
     {
         PhotonNetwork.ConnectUsingSettings();
@@ -70,7 +73,12 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        LoadingManager.Instance.LoadNetworkLevel("Game");
+        //LoadingManager.Instance.LoadNetworkLevel("Game");
+
+        lobbyPanel.SetActive(false);
+        roomPanel.SetActive(true);
+
+        LoadingManager.Instance.HideLoadingScreen();
     }
 
     public void ExitBtn()

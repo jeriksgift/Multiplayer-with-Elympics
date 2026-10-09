@@ -14,6 +14,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     private void Awake()
     {
+        // Set before connecting: Photon requires AutomaticallySyncScene on every client
+        // so remote clients follow the master's PhotonNetwork.LoadLevel(). Clients that
+        // leave it false stay in the lobby when the host starts the game.
+        PhotonNetwork.AutomaticallySyncScene = true;
+
         PhotonNetwork.ConnectUsingSettings();
         Debug.Log("Connecting...");
     }
@@ -73,8 +78,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        //LoadingManager.Instance.LoadNetworkLevel("Game");
-
+        // Scene transition to Game is driven by RoomManager's Start button,
+        // once a team slot is picked and everyone is ready.
         lobbyPanel.SetActive(false);
         roomPanel.SetActive(true);
 

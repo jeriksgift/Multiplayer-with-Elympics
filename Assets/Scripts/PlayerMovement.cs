@@ -34,38 +34,77 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     private Vector3 currentRot;
     float pitch;
 
+    private PhotonView photonView;
+
+    [Header("Camera Cleanup")]
+    [SerializeField] private float cameraSweepInterval = 0.5f;
+    private float nextCameraSweep;
+
     private void Awake()
     {
-        if (!GetComponent<PhotonView>().IsMine) return;
+        photonView = GetComponent<PhotonView>();
 
         //InputManager.Instance = gameObject.AddComponent<InputManager>();
     }
 
     private void Start()
     {
+        if (!photonView.IsMine) return;
+
         DestroyOtherCameras();
-        
         InputManager.Instance.LockCursor(true);
     }
 
+    /// <summary>
+    /// Removes the camera that belongs to every other networked player so only the
+    /// local player's camera renders.
+    /// <para>
+    /// PhotonView.Get resolves the owning player by walking up the hierarchy (the camera
+    /// sits under Player/GFX, two levels below the view). It returns null for cameras that
+    /// belong to no player - the Lobby scene's Main Camera is still alive for the frame
+    /// the Game scene loads in, because Destroy is deferred - and those must be skipped
+    /// rather than dereferenced.
+    /// </para>
+    /// </summary>
     private void DestroyOtherCameras()
     {
         GameObject[] cameras = GameObject.FindGameObjectsWithTag("MainCamera");
-        foreach (GameObject player in cameras)
+
+        foreach (GameObject cameraObject in cameras)
         {
-            if (PhotonView.Get(player).IsMine == false)
-            {
-                Destroy(player.GetComponent<Camera>().gameObject);
-            }
+            PhotonView owner = PhotonView.Get(cameraObject);
+
+            // Scene cameras are not ours to destroy.
+            if (owner == null) continue;
+
+            if (owner.IsMine) continue;
+
+            Destroy(cameraObject);
+        }
+    }
+
+    /// <summary>
+    /// Remote player prefabs arrive after this player's Start, so a single pass in
+    /// Start can miss their cameras. Re-sweep on a slow timer until the room settles.
+    /// </summary>
+    private void SweepForeignCameras()
+    {
+        if (Time.unscaledTime < nextCameraSweep) return;
+        nextCameraSweep = Time.unscaledTime + cameraSweepInterval;
+
+        if (GameObject.FindGameObjectsWithTag("MainCamera").Length > 1)
+        {
+            DestroyOtherCameras();
         }
     }
 
     private void Update()
     {
-        if (!GetComponent<PhotonView>().IsMine) return;
+        if (!photonView.IsMine) return;
 
         MovementAndLook();
         HandleJump();
+        SweepForeignCameras();
     }
 
     private void MovementAndLook()

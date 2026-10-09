@@ -78,9 +78,12 @@ public class HealthComponent : MonoBehaviour
         isDead = false;
         HealthChanged?.Invoke(health / maxHealth);
 
-        Transform randLoc = GameManager.Instance.GetSpawnLoc();
-        transform.position = randLoc.position;
-        transform.rotation = randLoc.rotation;
+        Transform spawnLoc = GameManager.Instance.GetSpawnLoc();
+        if (spawnLoc != null)
+        {
+            transform.position = spawnLoc.position;
+            transform.rotation = spawnLoc.rotation;
+        }
 
         photonView.RPC(nameof(EnableOrDisableGraphics), RpcTarget.All, true);
     }
